@@ -438,35 +438,36 @@
             , select   = $(this.selectElement)
             , control  = select.data('selectBox-control')
             , settings = select.data('selectBox-settings')
-            , options  = control.data('selectBox-options');
+            , options  = control.data('selectBox-options')
+            , handler  = settings.handler || control;
 
         if (control.hasClass('selectBox-disabled')) {
             return false;
         }
 
         this.hideMenus();
-        
+
         // Get top and bottom width of selectBox
-        var borderBottomWidth = parseInt(control.css('borderBottomWidth')) || 0;
-        var borderTopWidth = parseInt(control.css('borderTopWidth')) || 0;
-        
+        var borderBottomWidth = parseInt(handler.css('borderBottomWidth')) || 0;
+        var borderTopWidth = parseInt(handler.css('borderTopWidth')) || 0;
+
         // Get proper variables for keeping options in viewport
-        var pos = control.offset()
+        var pos = handler.offset()
             , optionsHeight = options.outerHeight()
-            , controlHeight = control.outerHeight()
+            , controlHeight = handler.outerHeight()
             , maxHeight = parseInt(options.css('max-height'))
             , scrollPos = $(window).scrollTop()
             , heightToTop = pos.top - scrollPos
             , heightToBottom = $(window).height() - ( heightToTop + controlHeight )
             , posTop = heightToTop > heightToBottom
-            , top = posTop 
+            , top = posTop
                   ? pos.top - optionsHeight + borderTopWidth
-                  : pos.top + controlHeight - borderBottomWidth;        
-        
-        
+                  : pos.top + controlHeight - borderBottomWidth;
+
+
         // If the height to top and height to bottom are less than the max-height
         if(heightToTop < maxHeight&& heightToBottom < maxHeight){
-            
+
             // Set max-height and top
             if(posTop){
                 var maxHeightDiff = maxHeight - ( heightToTop - 5 );
@@ -476,19 +477,19 @@
                 var maxHeightDiff = maxHeight - ( heightToBottom - 5 );
                 options.css({'max-height': maxHeight - maxHeightDiff + 'px'});
             }
-            
+
         }
-        
+
         // Save if position is top to options data
         options.data('posTop',posTop);
-        
-        
+
+
         // Menu position
         options
-            .width(control.innerWidth())
+            .width(handler.innerWidth())
             .css({
                 top: top,
-                left: control.offset().left
+                left: handler.offset().left
             })
             // Add Top and Bottom class based on position
             .addClass('selectBox-options selectBox-options-'+(posTop?'top':'bottom'));
@@ -585,7 +586,7 @@
                 });
                 $(this).removeClass('selectBox-menuShowing selectBox-menuShowing-'+(posTop?'top':'bottom'));
             }
-            
+
             options.css('max-height','')
             //Remove Top or Bottom class based on position
             options.removeClass('selectBox-options-'+(posTop?'top':'bottom'));
